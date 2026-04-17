@@ -1,0 +1,96 @@
+{% extends 'store/admin_base.html' %}
+{% block title %}Dashboard — Maison Elara Admin{% endblock %}
+{% block nav_dash %}active{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- STATS -->
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Revenue</div>
+    <div class="stat-value">₹{{ total_revenue|floatformat:0 }}</div>
+    <div class="stat-sub">All time</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Orders</div>
+    <div class="stat-value">{{ total_orders }}</div>
+    <div class="stat-sub">All time</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Active Products</div>
+    <div class="stat-value">{{ total_products }}</div>
+    <div class="stat-sub">In catalogue</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Pending Orders</div>
+    <div class="stat-value" style="color:{% if pending_orders > 0 %}#856404{% else %}inherit{% endif %}">{{ pending_orders }}</div>
+    <div class="stat-sub">Awaiting action</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem">
+
+  <!-- Recent Orders -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Recent Orders</span>
+      <a href="/admin-panel/orders/" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td><a href="/admin-panel/orders/{{ order.pk }}/" style="color:var(--gold)">#{{ order.pk }}</a></td>
+            <td>{{ order.customer_name }}</td>
+            <td>₹{{ order.total_amount|floatformat:0 }}</td>
+            <td><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+            <td style="color:#888;font-size:11px">{{ order.created_at|date:"d M Y" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align:center;color:#aaa;font-style:italic;padding:2rem">No orders yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Low Stock -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Low Stock Alert</span>
+      <a href="/admin-panel/products/" class="btn btn-outline btn-sm">Manage</a>
+    </div>
+    <div class="card-body">
+      {% for p in low_stock %}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--border)">
+        <div>
+          <div style="font-size:13px">{{ p.name }}</div>
+          <div style="font-size:10px;color:#aaa;margin-top:2px">{{ p.category.name|default:"Uncategorised" }}</div>
+        </div>
+        <span style="font-size:12px;font-weight:500;color:{% if p.stock == 0 %}var(--red){% else %}#856404{% endif %}">
+          {% if p.stock == 0 %}Out of stock{% else %}{{ p.stock }} left{% endif %}
+        </span>
+      </div>
+      {% empty %}
+      <div style="text-align:center;color:#aaa;font-size:12px;padding:2rem;font-style:italic">All products well-stocked</div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<!-- Quick Actions -->
+<div class="card" style="margin-top:0">
+  <div class="card-header"><span class="card-title">Quick Actions</span></div>
+  <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap">
+    <a href="/admin-panel/products/add/" class="btn btn-dark">+ Add Product</a>
+    <a href="/admin-panel/categories/add/" class="btn btn-outline" onclick="document.getElementById('cat-modal').style.display='flex'">+ Add Category</a>
+    <a href="/admin-panel/orders/?status=pending" class="btn btn-outline">View Pending Orders</a>
+    <a href="/" target="_blank" class="btn btn-outline">Preview Store ↗</a>
+  </div>
+</div>
+{% endblock %}

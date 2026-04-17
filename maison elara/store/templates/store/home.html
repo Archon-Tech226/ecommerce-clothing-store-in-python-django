@@ -1,0 +1,92 @@
+{% extends 'store/base.html' %}
+{% block title %}Maison Elara — Luxury Fashion{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<div style="display:grid;grid-template-columns:1fr 1fr;min-height:580px">
+  <div style="display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem 4rem 2.5rem">
+    <div style="font-size:10px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem">Spring / Summer 2026</div>
+    <h1 style="font-family:var(--serif);font-size:58px;font-weight:300;line-height:1.1;margin-bottom:1.5rem">Dressed in<br><em style="font-style:italic;color:var(--gold)">quiet luxury</em></h1>
+    <p style="font-size:13px;font-weight:300;color:var(--warm-gray);line-height:1.8;max-width:340px;margin-bottom:2.5rem;letter-spacing:.02em">Timeless silhouettes crafted from the world's finest fabrics. Wearable art for the discerning woman.</p>
+    <div style="display:flex;gap:1rem">
+      <a href="/shop/" class="btn btn-dark">Explore Collection</a>
+      <a href="/shop/?tag=new" class="btn btn-outline">New Arrivals</a>
+    </div>
+  </div>
+  <div style="background:linear-gradient(135deg,#EDE8E0,#D4C9B8 50%,#C8B99E);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+    <div style="font-family:var(--serif);font-size:28px;font-weight:300;font-style:italic;color:rgba(90,75,55,.55);letter-spacing:.05em">SS '26 Editorial</div>
+    <div style="font-size:10px;letter-spacing:.2em;color:rgba(90,75,55,.35);text-transform:uppercase">Campaign Image</div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+{% if categories %}
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title">Shop by <em>category</em></h2>
+    <a href="/shop/" class="see-all">View all</a>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat({% if categories|length >= 3 %}3{% else %}{{ categories|length }}{% endif %},1fr);gap:1.5rem">
+    {% for cat in categories %}
+    <a href="/shop/?category={{ cat.slug }}" style="cursor:pointer;display:block">
+      <div style="height:220px;background:linear-gradient(160deg,#E8DDD0,#C8B89A);display:flex;align-items:center;justify-content:center">
+        <span style="font-family:var(--serif);font-size:20px;font-style:italic;color:rgba(28,28,26,.35)">{{ cat.name }}</span>
+      </div>
+      <div style="padding:.75rem 0">
+        <div style="font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px">{{ cat.name }}</div>
+        <div style="font-size:11px;color:var(--warm-gray)">{{ cat.product_count }} piece{{ cat.product_count|pluralize }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- FEATURED PRODUCTS -->
+<div class="section section-alt">
+  <div class="section-header">
+    <h2 class="section-title">Editor's <em>picks</em></h2>
+    <a href="/shop/" class="see-all">Shop all</a>
+  </div>
+  <div class="product-grid">
+    {% for p in featured %}
+    <div class="product-card">
+      <a href="/product/{{ p.pk }}/">
+        <div class="product-img-wrap">
+          {% if p.image %}
+            <img src="{{ p.image.url }}" alt="{{ p.name }}">
+          {% else %}
+            <span class="product-img-placeholder">{{ p.name|truncatewords:1 }}</span>
+          {% endif %}
+          {% if p.tag %}<span class="product-tag tag-{{ p.tag }}">{{ p.get_tag_display }}</span>{% endif %}
+        </div>
+      </a>
+      <div class="product-brand">{{ p.brand }}</div>
+      <div class="product-name"><a href="/product/{{ p.pk }}/">{{ p.name }}</a></div>
+      <div class="product-price">
+        {% if p.original_price %}<span class="price-original">₹{{ p.original_price|floatformat:0 }}</span><span class="price-sale">₹{{ p.price|floatformat:0 }}</span>
+        {% else %}₹{{ p.price|floatformat:0 }}{% endif %}
+      </div>
+      <form method="post" action="/cart/add/{{ p.pk }}/" style="margin-top:.75rem">
+        {% csrf_token %}<input type="hidden" name="next" value="/">
+        <button type="submit" class="btn btn-outline btn-sm" style="width:100%">Add to Bag</button>
+      </form>
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--warm-gray)">
+      <p style="font-family:var(--serif);font-size:20px;font-style:italic">No products yet.</p>
+      <p style="font-size:12px;margin-top:.5rem">Add products from the <a href="/admin-panel/" style="color:var(--gold)">admin panel</a>.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- STRIP -->
+<div style="background:var(--charcoal);padding:3rem 2.5rem;display:flex;align-items:center;justify-content:space-between">
+  <div>
+    <div style="font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem">Limited Edition</div>
+    <div style="font-family:var(--serif);font-size:32px;font-weight:300;color:var(--ivory)">The Cashmere <em>Edit</em></div>
+  </div>
+  <a href="/shop/" class="btn" style="background:var(--ivory);color:var(--charcoal);white-space:nowrap">Shop the Edit</a>
+</div>
+{% endblock %}

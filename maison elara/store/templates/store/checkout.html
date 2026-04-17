@@ -1,0 +1,48 @@
+{% extends 'store/base.html' %}
+{% block title %}Checkout — Maison Elara{% endblock %}
+{% block content %}
+<div style="max-width:1000px;margin:0 auto;padding:3rem 2.5rem">
+  <h1 style="font-family:var(--serif);font-size:42px;font-weight:300;margin-bottom:2rem">Check<em style="font-style:italic;color:var(--gold)">out</em></h1>
+  <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:3rem;align-items:start">
+
+    <!-- Form -->
+    <form method="post">
+      {% csrf_token %}
+      <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;font-weight:500">Contact Information</div>
+      <div class="form-group"><label class="form-label">Full Name *</label><input name="name" required class="form-control" placeholder="Priya Sharma"></div>
+      <div class="form-group"><label class="form-label">Email *</label><input name="email" type="email" required class="form-control" placeholder="priya@example.com"></div>
+      <div class="form-group"><label class="form-label">Phone *</label><input name="phone" required class="form-control" placeholder="+91 98765 43210"></div>
+
+      <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:2rem 0 1.5rem;font-weight:500">Delivery Address</div>
+      <div class="form-group"><label class="form-label">Address *</label><textarea name="address" required class="form-control" placeholder="House / Flat, Street, Area" style="height:80px"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group"><label class="form-label">City *</label><input name="city" required class="form-control" placeholder="Chennai"></div>
+        <div class="form-group"><label class="form-label">Pincode *</label><input name="pincode" required class="form-control" placeholder="600001"></div>
+      </div>
+      <button type="submit" class="btn btn-dark" style="width:100%;padding:16px;margin-top:.5rem">Place Order</button>
+    </form>
+
+    <!-- Order Summary -->
+    <div>
+      <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;font-weight:500">Order Summary</div>
+      {% for item in items %}
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:.5px solid var(--border);font-size:13px">
+        <div>
+          <div style="font-family:var(--serif);font-size:15px">{{ item.product.name }}</div>
+          <div style="color:var(--warm-gray);font-size:11px">Qty: {{ item.qty }}</div>
+        </div>
+        <div>₹{{ item.line_total|floatformat:0 }}</div>
+      </div>
+      {% endfor %}
+      <div class="cart-summary-box" style="margin-top:1rem">
+        <div class="summary-row"><span>Subtotal</span><span>₹{{ subtotal|floatformat:0 }}</span></div>
+        <div class="summary-row"><span>Shipping</span><span>{% if shipping == 0 %}Free{% else %}₹{{ shipping }}{% endif %}</span></div>
+        <div class="summary-total">
+          <span class="summary-total-label">Total</span>
+          <span class="summary-total-price">₹{{ total|floatformat:0 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

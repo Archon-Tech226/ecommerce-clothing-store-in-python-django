@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Maison Elara{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#F8F4EF;--ivory:#FAF7F2;--charcoal:#1C1C1A;
+  --warm-gray:#6B6560;--gold:#B8976A;--gold-light:#D4B896;
+  --border:rgba(28,28,26,0.12);--red:#c0392b;--green:#27ae60;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Montserrat',sans-serif;
+}
+body{background:var(--ivory);color:var(--charcoal);font-family:var(--sans);min-height:100vh}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;height:auto}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:var(--ivory);border-bottom:0.5px solid var(--border);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:var(--serif);font-size:22px;font-weight:300;letter-spacing:.15em;cursor:pointer}
+.nav-logo em{font-style:italic;color:var(--gold)}
+.nav-links{display:flex;gap:2rem}
+.nav-link{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-gray);cursor:pointer;border:none;background:none;padding:4px 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s;font-family:var(--sans)}
+.nav-link:hover,.nav-link.active{color:var(--charcoal);border-color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:1.5rem}
+.cart-icon{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.1em;color:var(--charcoal)}
+.cart-badge{background:var(--gold);color:var(--ivory);border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center}
+
+/* BUTTONS */
+.btn{display:inline-block;padding:12px 28px;font-size:10px;font-family:var(--sans);font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s}
+.btn-dark{background:var(--charcoal);color:var(--ivory)}
+.btn-dark:hover{background:var(--gold)}
+.btn-outline{background:transparent;color:var(--charcoal);border:0.5px solid var(--charcoal)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-gold{background:var(--gold);color:var(--ivory)}
+.btn-gold:hover{background:#a07c55}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:8px 16px;font-size:9px}
+
+/* MESSAGES */
+.messages{padding:0 2.5rem;margin-top:1rem}
+.msg{padding:12px 16px;margin-bottom:8px;font-size:12px;letter-spacing:.05em}
+.msg-success{background:#eaf5ea;color:#1a5c1a;border-left:3px solid var(--green)}
+.msg-error{background:#fdf0ef;color:#7a1a1a;border-left:3px solid var(--red)}
+.msg-warning{background:#fef9e7;color:#7a5c00;border-left:3px solid #f0c040}
+
+/* MARQUEE */
+.marquee-bar{background:var(--charcoal);padding:11px 0;overflow:hidden}
+.marquee-inner{display:flex;gap:3rem;width:max-content;animation:marquee 22s linear infinite}
+.marquee-item{font-size:10px;font-weight:300;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-light);white-space:nowrap;display:flex;align-items:center;gap:1.5rem}
+.marquee-dot{width:3px;height:3px;background:var(--gold);border-radius:50%}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+.section{padding:4rem 2.5rem}
+.section-alt{background:var(--cream)}
+.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2.5rem}
+.section-title{font-family:var(--serif);font-size:36px;font-weight:300}
+.section-title em{font-style:italic;color:var(--gold)}
+.see-all{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-gray);background:none;border:none;border-bottom:1px solid var(--gold-light);padding-bottom:2px;cursor:pointer;font-family:var(--sans)}
+
+/* PRODUCT CARD */
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.product-card{cursor:pointer;position:relative}
+.product-img-wrap{height:280px;background:linear-gradient(145deg,#EDE4D8,#D4C4A8);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.product-img-wrap img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.product-img-placeholder{font-family:var(--serif);font-size:16px;font-style:italic;color:rgba(28,28,26,0.3)}
+.product-tag{position:absolute;top:12px;left:12px;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;font-weight:500}
+.tag-new{background:var(--charcoal);color:var(--ivory)}
+.tag-sale{background:var(--gold);color:var(--ivory)}
+.product-brand{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.product-name{font-family:var(--serif);font-size:16px;font-weight:400;margin-bottom:6px}
+.product-price{font-size:13px;color:var(--warm-gray)}
+.price-original{text-decoration:line-through;margin-right:6px}
+.price-sale{color:var(--gold);font-weight:500}
+.add-overlay{position:absolute;bottom:0;left:0;right:0;background:rgba(28,28,26,.88);color:var(--ivory);padding:10px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:var(--sans);font-weight:500;border:none;cursor:pointer;opacity:0;transition:opacity .2s;width:100%}
+.product-card:hover .add-overlay{opacity:1}
+
+/* FOOTER */
+footer{background:var(--charcoal);color:rgba(248,244,239,.6);padding:3rem 2.5rem 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.footer-brand{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--ivory);letter-spacing:.1em;margin-bottom:.75rem}
+.footer-brand em{font-style:italic;color:var(--gold)}
+.footer-desc{font-size:11px;line-height:1.8;max-width:220px}
+.footer-head{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1rem;font-weight:500}
+.footer-link{display:block;font-size:11px;margin-bottom:8px}
+.footer-bottom{border-top:.5px solid rgba(255,255,255,.1);padding-top:1.5rem;display:flex;justify-content:space-between;font-size:10px;letter-spacing:.05em}
+
+/* FORMS */
+.form-group{margin-bottom:1.25rem}
+.form-label{display:block;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:6px;font-weight:500}
+.form-control{width:100%;padding:10px 14px;border:.5px solid var(--border);background:var(--ivory);font-family:var(--sans);font-size:13px;color:var(--charcoal);outline:none;transition:border-color .2s}
+.form-control:focus{border-color:var(--gold)}
+select.form-control{cursor:pointer}
+textarea.form-control{resize:vertical;min-height:100px}
+.form-check{display:flex;align-items:center;gap:8px;font-size:12px}
+.form-check input{width:16px;height:16px;cursor:pointer}
+
+/* TABLES */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:500;color:var(--warm-gray);padding:10px 12px;text-align:left;border-bottom:.5px solid var(--border)}
+td{padding:12px;border-bottom:.5px solid var(--border);vertical-align:middle}
+tr:hover td{background:var(--cream)}
+
+/* STATUS BADGES */
+.badge{display:inline-block;padding:3px 10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.badge-pending{background:#fef3cd;color:#856404}
+.badge-confirmed{background:#d1ecf1;color:#0c5460}
+.badge-shipped{background:#d4edda;color:#155724}
+.badge-delivered{background:#c3e6cb;color:#155724}
+.badge-cancelled{background:#f8d7da;color:#721c24}
+.badge-new{background:var(--charcoal);color:var(--ivory)}
+.badge-sale{background:var(--gold);color:var(--ivory)}
+
+/* CART */
+.cart-item{display:grid;grid-template-columns:80px 1fr auto;gap:1.25rem;align-items:center;padding:1.25rem 0;border-bottom:.5px solid var(--border)}
+.cart-item-img{width:80px;height:100px;background:linear-gradient(145deg,#EDE4D8,#D4C4A8);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cart-item-img img{width:100%;height:100%;object-fit:cover}
+.qty-ctrl{display:flex;align-items:center;gap:10px;margin-top:10px}
+.qty-btn{width:28px;height:28px;border:.5px solid var(--border);background:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.cart-summary-box{background:var(--cream);padding:1.5rem;margin-top:1.5rem}
+.summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;color:var(--warm-gray)}
+.summary-total{display:flex;justify-content:space-between;padding-top:1rem;margin-top:.5rem;border-top:.5px solid var(--border)}
+.summary-total-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:500}
+.summary-total-price{font-family:var(--serif);font-size:24px;font-weight:300}
+
+{% block extra_css %}{% endblock %}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Maison <em>Elara</em></a>
+  <div class="nav-links">
+    <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a>
+    <a href="/shop/" class="nav-link {% if '/shop' in request.path %}active{% endif %}">Collection</a>
+    <a href="/shop/?tag=new" class="nav-link">New Arrivals</a>
+    <a href="/shop/?tag=sale" class="nav-link">Sale</a>
+  </div>
+  <div class="nav-right">
+    <a href="/cart/" class="cart-icon">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Bag <span class="cart-badge">{{ cart_item_count }}</span>
+    </a>
+  </div>
+</nav>
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+    <div class="msg msg-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<div class="marquee-bar" style="margin-top:4rem">
+  <div class="marquee-inner">
+    {% for i in "12345678" %}
+    <div class="marquee-item">Free shipping above ₹5,000 <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Sustainable & ethically sourced <span class="marquee-dot"></span></div>
+    <div class="marquee-item">New arrivals every Friday <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Complimentary gift wrapping <span class="marquee-dot"></span></div>
+    {% endfor %}
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">Maison <em>Elara</em></div>
+      <div class="footer-desc">Crafting timeless pieces for those who believe clothing is a form of self-expression. Est. 2018, Chennai.</div>
+    </div>
+    <div>
+      <div class="footer-head">Shop</div>
+      <a href="/shop/" class="footer-link">New Arrivals</a>
+      <a href="/shop/?category=dresses" class="footer-link">Dresses</a>
+      <a href="/shop/?tag=sale" class="footer-link">Sale</a>
+    </div>
+    <div>
+      <div class="footer-head">Help</div>
+      <span class="footer-link">Size Guide</span>
+      <span class="footer-link">Shipping & Returns</span>
+      <span class="footer-link">Contact Us</span>
+    </div>
+    <div>
+      <div class="footer-head">About</div>
+      <span class="footer-link">Our Story</span>
+      <span class="footer-link">Sustainability</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Maison Elara. All rights reserved.</span>
+    <span>Privacy · Terms</span>
+  </div>
+</footer>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

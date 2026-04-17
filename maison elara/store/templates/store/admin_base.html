@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Admin — Maison Elara{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--charcoal:#1C1C1A;--gold:#B8976A;--gold-light:#D4B896;--ivory:#FAF7F2;--cream:#F8F4EF;--border:rgba(28,28,26,.12);--sidebar:#16160F;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Montserrat',sans-serif;--green:#27ae60;--red:#c0392b}
+body{font-family:var(--sans);display:flex;min-height:100vh;background:var(--cream)}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--sidebar);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;overflow-y:auto}
+.sidebar-logo{padding:1.75rem 1.5rem;border-bottom:.5px solid rgba(255,255,255,.08)}
+.sidebar-logo-text{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--ivory);letter-spacing:.1em}
+.sidebar-logo-text em{font-style:italic;color:var(--gold)}
+.sidebar-tag{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:4px}
+.sidebar-nav{padding:1.5rem 0;flex:1}
+.nav-section{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:.5rem 1.5rem;margin-top:1rem}
+.nav-item{display:block;padding:10px 1.5rem;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s,background .2s;position:relative;font-weight:500}
+.nav-item:hover{color:var(--ivory);background:rgba(255,255,255,.05)}
+.nav-item.active{color:var(--gold);background:rgba(184,151,106,.1)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold)}
+.sidebar-footer{padding:1.5rem;border-top:.5px solid rgba(255,255,255,.08)}
+.sidebar-footer a{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);text-decoration:none;display:block;margin-bottom:8px}
+.sidebar-footer a:hover{color:var(--gold-light)}
+
+/* MAIN */
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--ivory);padding:1rem 2rem;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.topbar-title{font-family:var(--serif);font-size:22px;font-weight:300}
+.topbar-title em{font-style:italic;color:var(--gold)}
+.content{padding:2rem;flex:1}
+
+/* CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem}
+.stat-card{background:var(--ivory);border:.5px solid var(--border);padding:1.25rem}
+.stat-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--warm-gray,#6B6560);margin-bottom:.5rem}
+.stat-value{font-family:var(--serif);font-size:30px;font-weight:300}
+.stat-sub{font-size:11px;color:#999;margin-top:4px}
+.card{background:var(--ivory);border:.5px solid var(--border);margin-bottom:1.5rem}
+.card-header{padding:1rem 1.25rem;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:500}
+.card-body{padding:1.25rem}
+
+/* BUTTONS */
+.btn{display:inline-block;padding:9px 20px;font-size:10px;font-family:var(--sans);font-weight:500;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-dark{background:var(--charcoal);color:var(--ivory)}
+.btn-dark:hover{background:var(--gold)}
+.btn-outline{background:transparent;color:var(--charcoal);border:.5px solid var(--charcoal)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-gold{background:var(--gold);color:var(--ivory)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-success{background:var(--green);color:#fff}
+.btn-sm{padding:6px 14px;font-size:9px}
+
+/* MESSAGES */
+.messages{padding:0 2rem;margin-bottom:1rem}
+.msg{padding:10px 14px;font-size:12px;margin-bottom:6px}
+.msg-success{background:#eaf5ea;color:#155724;border-left:3px solid var(--green)}
+.msg-error{background:#fdf0ef;color:#721c24;border-left:3px solid var(--red)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:500;color:#888;padding:9px 12px;text-align:left;border-bottom:.5px solid var(--border);background:var(--cream)}
+td{padding:11px 12px;border-bottom:.5px solid var(--border);vertical-align:middle}
+tr:hover td{background:#fdfaf7}
+.product-thumb{width:44px;height:56px;object-fit:cover;background:var(--cream);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.product-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.form-group{margin-bottom:1.25rem}
+.form-label{display:block;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#888;margin-bottom:6px;font-weight:500}
+.form-control{width:100%;padding:9px 12px;border:.5px solid var(--border);background:var(--ivory);font-family:var(--sans);font-size:13px;color:var(--charcoal);outline:none;transition:border-color .2s}
+.form-control:focus{border-color:var(--gold)}
+select.form-control{cursor:pointer}
+textarea.form-control{resize:vertical;min-height:90px}
+.form-check{display:flex;align-items:center;gap:8px;font-size:12px}
+.form-check input{width:16px;height:16px}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 9px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.badge-pending{background:#fef3cd;color:#856404}
+.badge-confirmed{background:#d1ecf1;color:#0c5460}
+.badge-shipped{background:#d4edda;color:#155724}
+.badge-delivered{background:#c3e6cb;color:#155724}
+.badge-cancelled{background:#f8d7da;color:#721c24}
+.badge-new{background:var(--charcoal);color:var(--ivory)}
+.badge-sale{background:var(--gold);color:var(--ivory)}
+.badge-active{background:#d4edda;color:#155724}
+.badge-inactive{background:#f8d7da;color:#721c24}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">Maison <em>Elara</em></div>
+    <div class="sidebar-tag">Admin Panel</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <a href="/admin-panel/" class="nav-item {% block nav_dash %}{% endblock %}">Dashboard</a>
+
+    <div class="nav-section">Catalogue</div>
+    <a href="/admin-panel/products/" class="nav-item {% block nav_prod %}{% endblock %}">Products</a>
+    <a href="/admin-panel/categories/" class="nav-item {% block nav_cat %}{% endblock %}">Categories</a>
+
+    <div class="nav-section">Sales</div>
+    <a href="/admin-panel/orders/" class="nav-item {% block nav_ord %}{% endblock %}">Orders</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/" target="_blank">View Store ↗</a>
+    <a href="/admin-panel/logout/">Logout</a>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</div>
+    <a href="/admin-panel/products/add/" class="btn btn-dark btn-sm">+ Add Product</a>
+  </div>
+
+  {% if messages %}
+  <div class="messages" style="margin-top:1rem">
+    {% for message in messages %}
+    <div class="msg msg-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+</body>
+</html>

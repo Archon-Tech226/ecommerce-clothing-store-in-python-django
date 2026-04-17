@@ -1,0 +1,74 @@
+{% extends 'store/admin_base.html' %}
+{% block title %}Products — Maison Elara Admin{% endblock %}
+{% block nav_prod %}active{% endblock %}
+{% block topbar_title %}Products{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">All Products ({{ products|length }})</span>
+    <a href="/admin-panel/products/add/" class="btn btn-dark btn-sm">+ Add Product</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:60px">Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Tag</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>
+            <div class="product-thumb" style="width:44px;height:56px;background:linear-gradient(145deg,#EDE4D8,#D4C4A8);display:flex;align-items:center;justify-content:center;overflow:hidden">
+              {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:cover">
+              {% else %}<span style="font-size:9px;color:rgba(28,28,26,.3);font-style:italic;text-align:center;padding:2px">No img</span>{% endif %}
+            </div>
+          </td>
+          <td>
+            <div style="font-weight:500;font-size:13px">{{ p.name }}</div>
+            <div style="font-size:11px;color:#aaa">{{ p.brand }}</div>
+          </td>
+          <td style="font-size:12px;color:#888">{{ p.category.name|default:"—" }}</td>
+          <td>
+            <div style="font-size:13px">₹{{ p.price|floatformat:0 }}</div>
+            {% if p.original_price %}<div style="font-size:11px;color:#aaa;text-decoration:line-through">₹{{ p.original_price|floatformat:0 }}</div>{% endif %}
+          </td>
+          <td>
+            <span style="font-size:13px;color:{% if p.stock == 0 %}var(--red){% elif p.stock <= 5 %}#856404{% else %}inherit{% endif %}">
+              {{ p.stock }}
+            </span>
+          </td>
+          <td>
+            {% if p.tag %}<span class="badge badge-{{ p.tag }}">{{ p.get_tag_display }}</span>{% else %}<span style="color:#aaa;font-size:11px">—</span>{% endif %}
+          </td>
+          <td>
+            <span class="badge {% if p.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+              {% if p.is_active %}Active{% else %}Hidden{% endif %}
+            </span>
+          </td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <a href="/admin-panel/products/edit/{{ p.pk }}/" class="btn btn-outline btn-sm">Edit</a>
+              <form method="post" action="/admin-panel/products/delete/{{ p.pk }}/" style="display:inline" onsubmit="return confirm('Delete {{ p.name }}?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:3rem;color:#aaa;font-style:italic">No products yet. <a href="/admin-panel/products/add/" style="color:var(--gold)">Add your first product</a></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

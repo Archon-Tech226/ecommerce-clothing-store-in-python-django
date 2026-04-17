@@ -1,0 +1,65 @@
+{% extends 'store/base.html' %}
+{% block title %}Collection — Maison Elara{% endblock %}
+{% block content %}
+
+<div style="background:var(--cream);padding:2.5rem 2.5rem 0;border-bottom:.5px solid var(--border)">
+  <div style="display:flex;align-items:baseline;gap:1rem;margin-bottom:1.5rem">
+    <h1 style="font-family:var(--serif);font-size:48px;font-weight:300">The <em style="font-style:italic;color:var(--gold)">Collection</em></h1>
+    <span style="font-size:13px;color:var(--warm-gray)">{{ products|length }} piece{{ products|length|pluralize }}</span>
+  </div>
+
+  <!-- Filters -->
+  <form method="get" style="display:flex;align-items:center;gap:1.5rem;padding-bottom:1rem;flex-wrap:wrap">
+    <input name="q" value="{{ q }}" placeholder="Search pieces…" style="padding:8px 14px;border:.5px solid var(--border);background:var(--ivory);font-family:var(--sans);font-size:12px;outline:none;width:220px">
+    <select name="category" class="form-control" style="width:160px">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+      <option value="{{ cat.slug }}" {% if selected_cat == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+    <select name="tag" class="form-control" style="width:140px">
+      <option value="">All Tags</option>
+      <option value="new" {% if selected_tag == 'new' %}selected{% endif %}>New Arrivals</option>
+      <option value="sale" {% if selected_tag == 'sale' %}selected{% endif %}>On Sale</option>
+    </select>
+    <select name="sort" class="form-control" style="width:160px">
+      <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+      <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: Low → High</option>
+      <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High → Low</option>
+    </select>
+    <button type="submit" class="btn btn-dark btn-sm">Filter</button>
+    <a href="/shop/" class="btn btn-outline btn-sm">Reset</a>
+  </form>
+</div>
+
+<div class="section">
+  <div class="product-grid">
+    {% for p in products %}
+    <div class="product-card">
+      <a href="/product/{{ p.pk }}/">
+        <div class="product-img-wrap">
+          {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}">
+          {% else %}<span class="product-img-placeholder">{{ p.name|truncatewords:1 }}</span>{% endif %}
+          {% if p.tag %}<span class="product-tag tag-{{ p.tag }}">{{ p.get_tag_display }}</span>{% endif %}
+        </div>
+      </a>
+      <div class="product-brand">{{ p.brand }}</div>
+      <div class="product-name"><a href="/product/{{ p.pk }}/">{{ p.name }}</a></div>
+      <div class="product-price">
+        {% if p.original_price %}<span class="price-original">₹{{ p.original_price|floatformat:0 }}</span><span class="price-sale">₹{{ p.price|floatformat:0 }}</span>
+        {% else %}₹{{ p.price|floatformat:0 }}{% endif %}
+      </div>
+      <form method="post" action="/cart/add/{{ p.pk }}/" style="margin-top:.75rem">
+        {% csrf_token %}<input type="hidden" name="next" value="/shop/">
+        <button type="submit" class="btn btn-outline btn-sm" style="width:100%">Add to Bag</button>
+      </form>
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--warm-gray)">
+      <p style="font-family:var(--serif);font-size:24px;font-style:italic">No pieces found.</p>
+      <p style="font-size:12px;margin-top:.5rem">Try adjusting your filters.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

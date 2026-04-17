@@ -1,0 +1,94 @@
+{% extends 'store/admin_base.html' %}
+{% block title %}{{ action }} Product — Maison Elara Admin{% endblock %}
+{% block nav_prod %}active{% endblock %}
+{% block topbar_title %}{{ action }} Product{% endblock %}
+
+{% block content %}
+<div style="max-width:800px">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">{{ action }} Product</span>
+      <a href="/admin-panel/products/" class="btn btn-outline btn-sm">← Back</a>
+    </div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-grid">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Product Name *</label>
+            <input name="name" required class="form-control" value="{{ product.name|default:'' }}" placeholder="e.g. The Silk Column Dress">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Brand</label>
+            <input name="brand" class="form-control" value="{{ product.brand|default:'Maison Elara' }}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-control">
+              <option value="">— None —</option>
+              {% for cat in categories %}
+              <option value="{{ cat.pk }}" {% if product.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Price (₹) *</label>
+            <input name="price" type="number" step="0.01" required class="form-control" value="{{ product.price|default:'' }}" placeholder="15000">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Original Price (₹) <span style="color:#aaa;font-size:9px">for sale items</span></label>
+            <input name="original_price" type="number" step="0.01" class="form-control" value="{{ product.original_price|default:'' }}" placeholder="20000">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Stock Quantity</label>
+            <input name="stock" type="number" min="0" class="form-control" value="{{ product.stock|default:10 }}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tag</label>
+            <select name="tag" class="form-control">
+              <option value="" {% if not product.tag %}selected{% endif %}>None</option>
+              <option value="new" {% if product.tag == 'new' %}selected{% endif %}>New Arrival</option>
+              <option value="sale" {% if product.tag == 'sale' %}selected{% endif %}>Sale</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" placeholder="Describe the product — fabric, fit, care instructions…">{{ product.description|default:'' }}</textarea>
+          </div>
+
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Product Image</label>
+            {% if product.image %}
+            <div style="margin-bottom:.75rem">
+              <img src="{{ product.image.url }}" style="height:100px;object-fit:cover;border:.5px solid var(--border)">
+              <div style="font-size:11px;color:#aaa;margin-top:4px">Current image — upload a new one to replace</div>
+            </div>
+            {% endif %}
+            <input name="image" type="file" accept="image/*" class="form-control" style="padding:6px">
+          </div>
+
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-check">
+              <input type="checkbox" name="is_active" value="1" {% if product.is_active or not product %}checked{% endif %}>
+              <span>Active (visible to customers)</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;margin-top:1rem;padding-top:1.25rem;border-top:.5px solid var(--border)">
+          <button type="submit" class="btn btn-dark">{{ action }} Product</button>
+          <a href="/admin-panel/products/" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'store/admin_base.html' %}
+{% block title %}Orders — Maison Elara Admin{% endblock %}
+{% block nav_ord %}active{% endblock %}
+{% block topbar_title %}Orders{% endblock %}
+
+{% block content %}
+<!-- Filter Bar -->
+<div style="display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+  <a href="/admin-panel/orders/" class="btn {% if not status_filter %}btn-dark{% else %}btn-outline{% endif %} btn-sm">All</a>
+  <a href="/admin-panel/orders/?status=pending" class="btn {% if status_filter == 'pending' %}btn-dark{% else %}btn-outline{% endif %} btn-sm">Pending</a>
+  <a href="/admin-panel/orders/?status=confirmed" class="btn {% if status_filter == 'confirmed' %}btn-dark{% else %}btn-outline{% endif %} btn-sm">Confirmed</a>
+  <a href="/admin-panel/orders/?status=shipped" class="btn {% if status_filter == 'shipped' %}btn-dark{% else %}btn-outline{% endif %} btn-sm">Shipped</a>
+  <a href="/admin-panel/orders/?status=delivered" class="btn {% if status_filter == 'delivered' %}btn-dark{% else %}btn-outline{% endif %} btn-sm">Delivered</a>
+  <a href="/admin-panel/orders/?status=cancelled" class="btn {% if status_filter == 'cancelled' %}btn-dark{% else %}btn-outline{% endif %} btn-sm">Cancelled</a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">
+      {% if status_filter %}{{ status_filter|capfirst }} Orders{% else %}All Orders{% endif %}
+      ({{ orders|length }})
+    </span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Customer</th><th>Email</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td><a href="/admin-panel/orders/{{ order.pk }}/" style="color:var(--gold);font-weight:500">#{{ order.pk }}</a></td>
+          <td>{{ order.customer_name }}</td>
+          <td style="font-size:11px;color:#888">{{ order.customer_email }}</td>
+          <td style="font-size:12px">{{ order.items.count }} item{{ order.items.count|pluralize }}</td>
+          <td style="font-weight:500">₹{{ order.total_amount|floatformat:0 }}</td>
+          <td><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+          <td style="font-size:11px;color:#aaa">{{ order.created_at|date:"d M Y, g:i A" }}</td>
+          <td><a href="/admin-panel/orders/{{ order.pk }}/" class="btn btn-outline btn-sm">View</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:3rem;color:#aaa;font-style:italic">No orders found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

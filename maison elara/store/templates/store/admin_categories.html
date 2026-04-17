@@ -1,0 +1,95 @@
+{% extends 'store/admin_base.html' %}
+{% block title %}Categories — Maison Elara Admin{% endblock %}
+{% block nav_cat %}active{% endblock %}
+{% block topbar_title %}Categories{% endblock %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 1.5fr;gap:1.5rem;align-items:start">
+
+  <!-- Add / Edit Form -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Add Category</span></div>
+    <div class="card-body">
+      <form method="post" action="/admin-panel/categories/add/">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Category Name *</label>
+          <input name="name" required class="form-control" placeholder="e.g. Dresses">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-control" placeholder="Optional description…" style="min-height:70px"></textarea>
+        </div>
+        <button type="submit" class="btn btn-dark">Add Category</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Categories List -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">All Categories ({{ categories|length }})</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Slug</th><th>Products</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for cat in categories %}
+          <tr>
+            <td style="font-weight:500">{{ cat.name }}</td>
+            <td style="font-size:11px;color:#aaa">{{ cat.slug }}</td>
+            <td>{{ cat.product_count }}</td>
+            <td>
+              <div style="display:flex;gap:6px">
+                <!-- Inline edit via small form -->
+                <button class="btn btn-outline btn-sm" onclick="openEdit({{ cat.pk }}, '{{ cat.name }}', '{{ cat.description }}')">Edit</button>
+                <form method="post" action="/admin-panel/categories/delete/{{ cat.pk }}/" onsubmit="return confirm('Delete {{ cat.name }}?')">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align:center;padding:2rem;color:#aaa;font-style:italic">No categories yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center">
+  <div style="background:var(--ivory);padding:2rem;width:400px">
+    <div style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:500;margin-bottom:1.5rem">Edit Category</div>
+    <form id="edit-form" method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Name *</label>
+        <input id="edit-name" name="name" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="edit-desc" name="description" class="form-control" style="min-height:70px"></textarea>
+      </div>
+      <div style="display:flex;gap:1rem">
+        <button type="submit" class="btn btn-dark">Save Changes</button>
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('edit-modal').style.display='none'">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openEdit(pk, name, desc) {
+  document.getElementById('edit-form').action = '/admin-panel/categories/edit/' + pk + '/';
+  document.getElementById('edit-name').value = name;
+  document.getElementById('edit-desc').value = desc;
+  document.getElementById('edit-modal').style.display = 'flex';
+}
+</script>
+{% endblock %}
